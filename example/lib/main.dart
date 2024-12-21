@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'LLM Chat UI Example',
+      title: 'LLM Chat UI',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system,
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class ChatExampleScreen extends StatefulWidget {
-  const ChatExampleScreen({super.key});
+  const ChatExampleScreen({Key? key}) : super(key: key);
 
   @override
   State<ChatExampleScreen> createState() => _ChatExampleScreenState();
@@ -39,6 +39,8 @@ class _ChatExampleScreenState extends State<ChatExampleScreen> {
     ),
   ];
 
+  bool _showSystemMessages = true;
+
   void _handleSendMessage(String text) {
     setState(() {
       _messages.insert(
@@ -54,10 +56,25 @@ class _ChatExampleScreenState extends State<ChatExampleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('LLM Chat UI Example')),
+      appBar: AppBar(
+        title: const Text('LLM Chat UI'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              _showSystemMessages ? Icons.visibility : Icons.visibility_off,
+            ),
+            onPressed: () {
+              setState(() {
+                _showSystemMessages = !_showSystemMessages;
+              });
+            },
+          ),
+        ],
+      ),
       body: ChatScreen(
         messages: _messages,
         onSendMessage: _handleSendMessage,
+        showSystemMessages: _showSystemMessages,
       ),
     );
   }

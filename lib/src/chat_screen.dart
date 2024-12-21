@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'models/chat_message.dart';
+import 'package:llm_chat_ui/llm_chat_ui.dart';
 import 'message_bubble.dart';
 
 typedef SendMessageCallback = void Function(String message);
@@ -8,12 +8,14 @@ class ChatScreen extends StatefulWidget {
   final List<ChatMessage> messages;
   final SendMessageCallback onSendMessage;
   final String hintText;
+  final bool showSystemMessages;
 
   const ChatScreen({
     super.key,
     required this.messages,
     required this.onSendMessage,
     this.hintText = 'Type a message...',
+    this.showSystemMessages = true,
   });
 
   @override
@@ -25,7 +27,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final visibleMessages = widget.showSystemMessages
+        ? widget.messages
+        : widget.messages
+            .where((msg) => msg.messageType != MessageType.system)
+            .toList();
 
     return Column(
       children: [
@@ -33,19 +39,19 @@ class _ChatScreenState extends State<ChatScreen> {
           child: ListView.builder(
             reverse: true,
             padding: const EdgeInsets.all(8.0),
-            itemCount: widget.messages.length,
+            itemCount: visibleMessages.length,
             itemBuilder: (context, index) {
-              final message = widget.messages[index];
+              final message = visibleMessages[index];
               return MessageBubble(message: message);
             },
           ),
         ),
-        _buildInputField(theme),
+        _buildInputField(),
       ],
     );
   }
 
-  Widget _buildInputField(ThemeData theme) {
+  Widget _buildInputField() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -58,15 +64,11 @@ class _ChatScreenState extends State<ChatScreen> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                hintStyle: theme.textTheme.bodyMedium,
               ),
             ),
           ),
           IconButton(
-            icon: Icon(
-              Icons.send,
-              color: theme.colorScheme.primary,
-            ),
+            icon: const Icon(Icons.send),
             onPressed: () {
               final text = _controller.text.trim();
               if (text.isNotEmpty) {
