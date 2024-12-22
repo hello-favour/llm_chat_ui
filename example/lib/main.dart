@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
 }
 
 class ChatExampleScreen extends StatefulWidget {
-  const ChatExampleScreen({Key? key}) : super(key: key);
+  const ChatExampleScreen({super.key});
 
   @override
   State<ChatExampleScreen> createState() => _ChatExampleScreenState();

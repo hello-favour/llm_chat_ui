@@ -15,5 +15,4 @@ Add the `llm_chat_ui` package to your `pubspec.yaml` file or clone this reposito
 
 ```yaml
 dependencies:
-  llm_chat_ui:
-    path: ../ # Replace with the actual path if local or version if from pub.dev
+  llm_chat_ui: ^0.0.1 
